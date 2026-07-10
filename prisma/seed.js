@@ -11,41 +11,35 @@ const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
-// Standard TipTap JSON mock generator helper
-function createTipTapContent(title, paragraph1, quote, code, paragraph2) {
-  const doc = {
-    type: 'doc',
-    content: [
-      {
+// Helper to convert paragraph blocks to TipTap JSON
+function createSimpleTipTapJSON(paragraphsAndHeadings) {
+  const content = [];
+  paragraphsAndHeadings.forEach((block) => {
+    if (block.type === 'heading') {
+      content.push({
         type: 'heading',
-        attrs: { level: 1 },
-        content: [{ type: 'text', text: title }]
-      },
-      {
-        type: 'paragraph',
-        content: [{ type: 'text', text: paragraph1 }]
-      },
-      {
+        attrs: { level: block.level || 2 },
+        content: [{ type: 'text', text: block.text }],
+      });
+    } else if (block.type === 'blockquote') {
+      content.push({
         type: 'blockquote',
         content: [
           {
             type: 'paragraph',
-            content: [{ type: 'text', text: quote }]
-          }
-        ]
-      },
-      {
-        type: 'codeBlock',
-        attrs: { language: 'javascript' },
-        content: [{ type: 'text', text: code }]
-      },
-      {
+            content: [{ type: 'text', text: block.text }],
+          },
+        ],
+      });
+    } else {
+      content.push({
         type: 'paragraph',
-        content: [{ type: 'text', text: paragraph2 }]
-      }
-    ]
-  };
-  return JSON.stringify(doc);
+        content: [{ type: 'text', text: block.text }],
+      });
+    }
+  });
+
+  return JSON.stringify({ type: 'doc', content });
 }
 
 async function main() {
@@ -60,7 +54,7 @@ async function main() {
 
   console.log('Seeding users...');
   const passwordHash = await bcrypt.hash('password123', 10);
-  
+
   const admin = await prisma.user.create({
     data: {
       name: 'Sarah Connor',
@@ -92,137 +86,103 @@ async function main() {
   });
 
   console.log('Seeding categories...');
-  const categories = await Promise.all([
-    prisma.category.create({ data: { name: 'Technology', slug: 'technology' } }),
-    prisma.category.create({ data: { name: 'Design', slug: 'design' } }),
-    prisma.category.create({ data: { name: 'SaaS', slug: 'saas' } }),
-    prisma.category.create({ data: { name: 'Productivity', slug: 'productivity' } }),
-    prisma.category.create({ data: { name: 'Marketing', slug: 'marketing' } }),
-  ]);
+  const catAnalytics = await prisma.category.create({ data: { name: 'Data & Analytics', slug: 'data-analytics' } });
+  const catCareers = await prisma.category.create({ data: { name: 'Careers & Tech', slug: 'careers-tech' } });
+  const catProductivity = await prisma.category.create({ data: { name: 'Productivity', slug: 'productivity' } });
 
   console.log('Seeding tags...');
-  const tags = await Promise.all([
-    prisma.tag.create({ data: { name: 'Next.js', slug: 'nextjs' } }),
-    prisma.tag.create({ data: { name: 'TailwindCSS', slug: 'tailwindcss' } }),
-    prisma.tag.create({ data: { name: 'React', slug: 'react' } }),
-    prisma.tag.create({ data: { name: 'Database', slug: 'database' } }),
-    prisma.tag.create({ data: { name: 'UI/UX', slug: 'ui-ux' } }),
-    prisma.tag.create({ data: { name: 'Prisma', slug: 'prisma' } }),
-  ]);
+  const tagAnalytics = await prisma.tag.create({ data: { name: 'analytics', slug: 'analytics' } });
+  const tagBi = await prisma.tag.create({ data: { name: 'business intelligence', slug: 'business-intelligence' } });
+  const tagTrends = await prisma.tag.create({ data: { name: 'data trends', slug: 'data-trends' } });
+  
+  const tagFullStack = await prisma.tag.create({ data: { name: 'full-stack development', slug: 'full-stack-development' } });
+  const tagHiring = await prisma.tag.create({ data: { name: 'hiring', slug: 'hiring' } });
+  const tagCareers = await prisma.tag.create({ data: { name: 'software careers', slug: 'software-careers' } });
+  
+  const tagHabits = await prisma.tag.create({ data: { name: 'developer habits', slug: 'developer-habits' } });
+  const tagProd = await prisma.tag.create({ data: { name: 'productivity', slug: 'productivity' } });
+  const tagCoding = await prisma.tag.create({ data: { name: 'coding tips', slug: 'coding-tips' } });
 
   console.log('Seeding blogs...');
   const blogsData = [
     {
-      title: 'Building a Premium SaaS Platform with Next.js 15',
-      slug: 'building-premium-saas-nextjs-15',
-      excerpt: 'Learn the core principles of constructing a modern, production-ready SaaS application with styling, databases, and secure authentication.',
-      coverImage: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200',
+      title: 'The Future of Data Analytics: What Every Business Should Know in 2026',
+      slug: 'the-future-of-data-analytics-what-every-business-should-know-in-2026',
+      excerpt: "The shift from reactive reporting to real-time, predictive analytics has changed how businesses make decisions.",
+      coverImage: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200',
       published: true,
       publishedAt: new Date(),
-      authorId: admin.id,
-      categoryId: categories[0].id, // Tech
-      tags: { connect: [{ id: tags[0].id }, { id: tags[1].id }, { id: tags[2].id }] },
-      content: createTipTapContent(
-        'Building a Premium SaaS Platform with Next.js 15',
-        'Creating a modern SaaS platform is not just about writing code; it is about establishing a high-end visual design language, ensuring blazingly fast response times, and maintaining top-tier security standards. Next.js 15 provides an outstanding platform to accomplish all of these goals out of the box using Server Components.',
-        'Good design is obvious. Great design is transparent. - Joe Sparano',
-        `// Example Next.js 15 Route Handler
-import { NextResponse } from 'next/server';
-
-export async function GET() {
-  return NextResponse.json({ status: 'active', version: '15.1.0' });
-}`,
-        'By utilizing features such as App Router middlewares, HttpOnly cookies, and clean Zod validation schemas, developers can ensure their applications are robust against common security threats while keeping developer velocity extremely high.'
-      )
+      authorId: employee.id,
+      categoryId: catAnalytics.id,
+      tags: { connect: [{ id: tagAnalytics.id }, { id: tagBi.id }, { id: tagTrends.id }] },
+      content: createSimpleTipTapJSON([
+        { type: 'paragraph', text: "Data used to be something companies collected. Today, it's something companies think with." },
+        { type: 'paragraph', text: "The shift from reactive reporting to real-time, predictive analytics has changed how businesses make decisions. A decade ago, most companies looked at last month's numbers to plan next quarter. Now, dashboards update by the second, and AI models forecast outcomes before a trend even fully forms." },
+        { type: 'heading', level: 2, text: '1. From Descriptive to Predictive' },
+        { type: 'paragraph', text: 'Traditional analytics answered "what happened?" Modern analytics answers "what\'s likely to happen next?" — and increasingly, "what should we do about it?" Predictive models are now embedded directly into everyday tools, not just specialist software.' },
+        { type: 'heading', level: 2, text: '2. Democratization of Data' },
+        { type: 'paragraph', text: 'You no longer need a data science degree to explore data. No-code dashboards and natural-language query tools mean a marketing manager can ask "which campaign drove the most signups last week?" and get an instant, visual answer.' },
+        { type: 'heading', level: 2, text: '3. The Rise of Real-Time Decisioning' },
+        { type: 'paragraph', text: 'Batch reports run overnight are being replaced by streaming analytics — useful for fraud detection, inventory management, and customer experience personalization, where a delay of even a few hours can mean lost revenue.' },
+        { type: 'heading', level: 2, text: '4. Privacy-First Analytics' },
+        { type: 'paragraph', text: 'With tightening data regulations globally, businesses are investing in privacy-preserving analytics — aggregated insights without exposing individual user data. This isn\'t just compliance; it\'s becoming a trust differentiator.' },
+        { type: 'blockquote', text: 'Takeaway: Companies that treat analytics as a core decision-making layer — not just a reporting function — are the ones that will move faster and smarter in the years ahead.' }
+      ])
     },
     {
-      title: 'Why Glassmorphism is Making a Comeback in Web Design',
-      slug: 'why-glassmorphism-comeback-web-design',
-      excerpt: 'Exploring the visual aesthetics of transparent layouts, backdrop filters, and subtle border shadows that feel extremely premium.',
-      coverImage: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=1200',
+      title: 'Why Full-Stack Developers Are More Valuable Than Ever',
+      slug: 'why-full-stack-developers-are-more-valuable-than-ever',
+      excerpt: "A good full-stack developer isn't someone who knows a little of everything — it's someone who knows enough of everything to build something that actually works, end to end.",
+      coverImage: 'https://images.unsplash.com/photo-1607799279861-4dd421887fb3?w=1200',
       published: true,
       publishedAt: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
       authorId: employee.id,
-      categoryId: categories[1].id, // Design
-      tags: { connect: [{ id: tags[1].id }, { id: tags[4].id }] },
-      content: createTipTapContent(
-        'Why Glassmorphism is Making a Comeback in Web Design',
-        'Web layouts are evolving past flat borders and solid colors. Designers at Stripe, Linear, and Vercel are leveraging frosted-glass backdrops, vibrant colorful underlays, and microscopic highlight borders. This styling technique, known as glassmorphism, elevates standard cards to feel premium and dimensional.',
-        'Design is not just what it looks like and feels like. Design is how it works. - Steve Jobs',
-        `/* Glassmorphism CSS Utility */
-.glass-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}`,
-        'When implementing glassmorphism, remember to maintain high readability. Always combine low opacity background colors with solid high-contrast text and utilize fallback colors for browsers that do not support backdrop-filters.'
-      )
+      categoryId: catCareers.id,
+      tags: { connect: [{ id: tagFullStack.id }, { id: tagHiring.id }, { id: tagCareers.id }] },
+      content: createSimpleTipTapJSON([
+        { type: 'paragraph', text: "A good full-stack developer isn't someone who knows a little of everything — it's someone who knows enough of everything to build something that actually works, end to end." },
+        { type: 'heading', level: 2, text: '1. Startups Need Builders, Not Specialists (At First)' },
+        { type: 'paragraph', text: 'Early-stage companies rarely have the luxury of ten specialized engineers. They need people who can design a database schema in the morning and fix a CSS bug in the afternoon. Full-stack developers fill that gap.' },
+        { type: 'heading', level: 2, text: '2. The Modern Stack Has Gotten More Unified' },
+        { type: 'paragraph', text: "With frameworks like Next.js blurring the line between frontend and backend, and tools like Prisma simplifying database work, it's genuinely easier than it used to be for one person to own a feature from UI to API to database." },
+        { type: 'heading', level: 2, text: '3. Faster Iteration, Fewer Handoffs' },
+        { type: 'paragraph', text: "When one person understands the whole flow of a feature, there's less back-and-forth between teams. Bugs get fixed faster because there's no \"that's not my part of the stack\" excuse." },
+        { type: 'heading', level: 2, text: '4. What Companies Actually Look For' },
+        { type: 'paragraph', text: 'Beyond just knowing React and Node, companies increasingly value full-stack developers who understand basic system design and API structuring, authentication and security fundamentals, deployment and debugging in production, and writing clean, readable, and testable code.' },
+        { type: 'blockquote', text: "Takeaway: Full-stack development isn't about being a jack-of-all-trades and master of none — it's about being able to take an idea from concept to a working, deployed product. That skill only becomes more valuable as teams stay lean and timelines get tighter." }
+      ])
     },
     {
-      title: 'Optimizing Database Queries with Prisma 7',
-      slug: 'optimizing-database-queries-prisma-7',
-      excerpt: 'A deep-dive analysis into using driver adapters, connection pooling, and optimizing relational lookups in modern backend environments.',
-      coverImage: 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=1200',
+      title: '5 Small Habits That Make You a Better Developer',
+      slug: '5-small-habits-that-make-you-a-better-developer',
+      excerpt: "None of these habits require extra time in your day — they just require a small shift in how you already work.",
+      coverImage: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200',
       published: true,
       publishedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
       authorId: admin.id,
-      categoryId: categories[2].id, // SaaS
-      tags: { connect: [{ id: tags[3].id }, { id: tags[5].id }] },
-      content: createTipTapContent(
-        'Optimizing Database Queries with Prisma 7',
-        'Prisma 7 has introduced a major paradigm shift by moving database connections from a Rust engine binary to native JavaScript driver adapters. This change reduces package sizes and improves cold-start times dramatically in serverless functions.',
-        'Simple is better than complex. Complex is better than complicated. - Python Zen',
-        `// Initialize Prisma 7 with a pg Pool adapter
-import { PrismaClient } from '@prisma/client';
-import { PrismaPg } from '@prisma/adapter-pg';
-import pg from 'pg';
-
-const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });`,
-        'In addition to driver adapters, make sure to index keys used in frequent filters, write specific queries using select instead of returning entire models, and manage your connections diligently using global wrappers in development.'
-      )
+      categoryId: catProductivity.id,
+      tags: { connect: [{ id: tagHabits.id }, { id: tagProd.id }, { id: tagCoding.id }] },
+      content: createSimpleTipTapJSON([
+        { type: 'paragraph', text: "1. Read code more than you write it. Reviewing others' code — even messy code — teaches you patterns and anti-patterns faster than tutorials do." },
+        { type: 'paragraph', text: "2. Write commit messages like someone else will read them. Because they will — including future you." },
+        { type: 'paragraph', text: "3. Google the error message, not the whole problem. Specific errors lead to specific answers." },
+        { type: 'paragraph', text: "4. Refactor in small steps. Big rewrites break things; small, tested changes don't." },
+        { type: 'paragraph', text: "5. Take breaks before you're stuck for an hour. A 10-minute walk often solves what an hour of staring at the screen won't." },
+        { type: 'paragraph', text: "None of these habits require extra time in your day — they just require a small shift in how you already work." }
+      ])
     },
     {
-      title: 'The Blueprint of a 10x Productive Software Developer',
-      slug: 'blueprint-10x-productive-software-developer',
-      excerpt: 'Tips and strategies to eliminate context switching, structure deep work sessions, and master keyboard-driven workflows.',
-      coverImage: 'https://images.unsplash.com/photo-1484417894907-623942c8ea29?w=1200',
-      published: true,
-      publishedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
-      authorId: employee.id,
-      categoryId: categories[3].id, // Productivity
-      tags: { connect: [{ id: tags[4].id }] },
-      content: createTipTapContent(
-        'The Blueprint of a 10x Productive Software Developer',
-        'Productivity in software engineering is rarely about typing faster. Instead, it is about maintaining concentration, mastering developer tools, and structuring logical deep work periods. Reducing the friction to start coding pays massive dividends.',
-        'Focus is a matter of deciding what things you are not going to do. - John Carmack',
-        `// Keyboard shortcut configuration example
-const shortcuts = {
-  findFile: 'Ctrl + P',
-  commandPalette: 'Ctrl + Shift + P',
-  toggleSidebar: 'Ctrl + B'
-};`,
-        'By investing time in setting up custom terminal aliases, learning keybindings in VS Code, and establishing structured blocks of time for focused development, you can increase your output while reducing mental fatigue.'
-      )
-    },
-    {
-      title: 'Draft: The Future of Developer Content Platforms',
-      slug: 'future-developer-content-platforms',
-      excerpt: 'Unpublished draft exploring how interactive code environments, markdown, and video elements will shape developer documentation.',
-      coverImage: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=1200',
+      title: 'Draft: Modern Designing Guidelines for Frosted Glass Cards',
+      slug: 'modern-design-frosted-glass-cards',
+      excerpt: "Unpublished outline evaluating visual contrast structures in UI layout panels.",
+      coverImage: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=1200',
       published: false,
       authorId: employee.id,
-      categoryId: categories[0].id, // Tech
-      tags: { connect: [{ id: tags[0].id }] },
-      content: createTipTapContent(
-        'The Future of Developer Content Platforms',
-        'Developer-targeted websites require a higher standard of visual presentation and utility. Standard text documents are no longer enough; developers expect live previews, copy-pasteable blocks, and deep linking features.',
-        'Documentation is the love letter you write to your future self. - Unknown',
-        `// Code block placeholder
-const futurePlatform = true;`,
-        'We will explore how headless rich text editors (like TipTap) allow platforms to customize component embedding, making documents dynamic and interactive.'
-      )
+      categoryId: catCareers.id,
+      tags: { connect: [{ id: tagCoding.id }] },
+      content: createSimpleTipTapJSON([
+        { type: 'paragraph', text: "Frosted glass elements require highly structured spacing borders and distinct backdrop drop filters to ensure proper readability and contrast under dark themes." }
+      ])
     }
   ];
 
@@ -230,10 +190,11 @@ const futurePlatform = true;`,
     const createdBlog = await prisma.blog.create({ data: blog });
     console.log(`Created blog: ${createdBlog.title}`);
     
-    // Seed views, likes, and comments for the published blogs
+    // Seed mock interactions: views, likes, comments
     if (createdBlog.published) {
       await prisma.view.create({ data: { blogId: createdBlog.id, ip: '127.0.0.1' } });
       await prisma.view.create({ data: { blogId: createdBlog.id, ip: '192.168.1.1' } });
+      await prisma.view.create({ data: { blogId: createdBlog.id, ip: '10.0.0.5' } });
       
       await prisma.like.create({
         data: {

@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import { calculateReadingTime } from '@/utils/readingTime';
 import { Calendar, Clock, Eye, Heart, MessageSquare, ArrowRight } from 'lucide-react';
