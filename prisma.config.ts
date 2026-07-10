@@ -7,8 +7,9 @@ export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",
+    seed: "node ./prisma/seed.js",
   },
   datasource: {
-    url: process.env["DATABASE_URL"],
+    url: process.env["postgresql://postgres:Admin123@localhost:5432/Blog_builder?schema=public"],
   },
 });
