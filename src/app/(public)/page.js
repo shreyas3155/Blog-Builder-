@@ -3,6 +3,11 @@ import { HomeFeedClient } from './HomeFeedClient';
 import { Sparkles, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
+// ISR: regenerate this page in the background every 60s
+// New published blogs will appear without a full redeploy
+export const revalidate = 60;
+
+
 // ─── Static Metadata ─────────────────────────────────────────────────────────
 export const metadata = {
   title: 'InkFlow — Where Creative Minds Meet High-Quality Execution',
