@@ -1,15 +1,15 @@
-# Inkflow - SaaS Blog Builder Platform
+# BlogBuilder- SaaS Blog Builder Platform
 
 A production-quality internal developer blogging platform (similar to Medium, Dev.to, and Vercel Dashboard) built as a Full-Stack hiring assignment submission.
 
 ## 1. Overview & Key Objectives
-Inkflow is a role-based internal publication system built to empower employees to draft and publish technical blogs, while giving administrators total authority to audit posts, manage staff accounts, and curate taxonomy tags/categories. The public interface prioritizes high-fidelity readability and beautiful visual aesthetics (Frosted glass filters, clean outfit typography, dark theme support, and custom inline brand vectors).
+BlogBuilder is a role-based internal publication system built to empower employees to draft and publish technical blogs, while giving administrators total authority to audit posts, manage staff accounts, and curate taxonomy tags/categories. The public interface prioritizes high-fidelity readability and beautiful visual aesthetics (Frosted glass filters, clean outfit typography, dark theme support, and custom inline brand vectors).
 
 ---
 
 ## 2. Tech Stack & Architectural Decisions
 
-*   **Framework**: **Next.js 15 (App Router)** - Renders pages dynamically, utilizing secure Server Actions/Route Handlers for API logic without a separate Express server.
+*   **Framework**: **Next.js 16 (App Router)** - Renders pages dynamically, utilizing secure Server Actions/Route Handlers for API logic without a separate Express server.
 *   **Language**: **JavaScript** - Built entirely in JS (avoiding TypeScript overhead as specified in constraints).
 *   **Database**: **PostgreSQL & Prisma ORM 7** - A robust relational model schema featuring cascade deletions, and configured using Prisma's modern, native JavaScript driver adapter (`@prisma/adapter-pg` & `pg` connection pool) for fast startups.
 *   **Styling**: **Tailwind CSS v4 & Framer Motion** - Implements a premium developer-oriented visual identity, combining layout utility utilities with glassmorphic cards and subtle animations.
@@ -25,7 +25,7 @@ Inkflow is a role-based internal publication system built to empower employees t
 ### 🔑 Authentication & Role Security
 - **Bcrypt Hashing**: Encrypts password payloads during signup.
 - **HttpOnly Cookies Session**: JWT verified on the server-side via Route Handlers.
-- **Next.js Route Protection**: `src/middleware.js` automatically guards `/admin/*` and `/employee/*` layouts, redirecting unauthorized users.
+- **Next.js Route Protection**: Layout-level guards (`src/app/(admin)/admin/layout.js` and `src/app/(employee)/layout.js`) secure dashboard layouts, combined with server-side cookie-based JWT checks at the API Route Handler level to protect endpoints.
 
 ### 📝 TipTap Rich Text Editor Workspace
 - **Formatting Tools**: Bold, italic, underline, blockquotes, code-blocks, inline code, headings (H1/H2/H3), bullet/ordered lists.
