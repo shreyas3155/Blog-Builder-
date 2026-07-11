@@ -10,6 +10,6 @@ export default defineConfig({
     seed: "node ./prisma/seed.js",
   },
   datasource: {
-    url: process.env["postgresql://postgres:Admin123@localhost:5432/Blog_builder?schema=public"],
+    url: process.env.DATABASE_URL || "postgresql://postgres:Admin123@localhost:5432/Blog_builder?schema=public",
   },
 });
