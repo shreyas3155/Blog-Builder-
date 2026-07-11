@@ -114,13 +114,13 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 Run `npx prisma db seed` to populate the database with these logins:
 
 *   **Administrator**:
-    *   Email: `admin@Inkflow.com`
+    *   Email: `admin@bb.com`
     *   Password: `password123`
 *   **Employee Writer**:
-    *   Email: `employee@Inkflow.com`
+    *   Email: `employee@bb.com`
     *   Password: `password123`
 *   **Reader Customer**:
-    *   Email: `reader@Inkflow.com`
+    *   Email: `reader@bb.com`
     *   Password: `password123`
 
 ---
