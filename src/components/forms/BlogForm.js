@@ -274,7 +274,7 @@ export function BlogForm({ initialData, onSave, isSaving }) {
 
           <div className="text-xs text-muted-foreground leading-relaxed flex flex-col gap-2">
             <p><strong>Status:</strong> {initialData?.published ? 'Published' : 'Draft'}</p>
-            <p><strong>Last Saved:</strong> {initialData?.updatedAt ? new Date(initialData.updatedAt).toLocaleTimeString() : 'Not saved yet'}</p>
+            <p><strong>Last Saved:</strong> {initialData?.updatedAt ? new Date(initialData.updatedAt).toLocaleTimeString('en-US') : 'Not saved yet'}</p>
           </div>
 
           <div className="grid grid-cols-2 gap-3 mt-2">

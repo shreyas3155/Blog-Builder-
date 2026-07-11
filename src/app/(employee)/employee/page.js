@@ -156,7 +156,7 @@ export default function EmployeeDashboardPage() {
                       </p>
                       <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground/80 mt-1">
                         <Clock className="w-3 h-3" />
-                        {new Date(activity.createdAt).toLocaleDateString()}
+                        {new Date(activity.createdAt).toLocaleDateString('en-US')}
                         <Link
                           href={activity.link}
                           target="_blank"
