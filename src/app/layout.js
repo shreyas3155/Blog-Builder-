@@ -15,6 +15,14 @@ const outfit = Outfit({
 export const metadata = {
   title: "Blog Builder Platform",
   description: "A premium, production-ready SaaS Blog Builder platform.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "32x32", type: "image/x-icon" },
+      { url: "/logo.png", sizes: "any", type: "image/png" },
+    ],
+    apple: { url: "/logo.png", sizes: "180x180", type: "image/png" },
+    shortcut: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({ children }) {
