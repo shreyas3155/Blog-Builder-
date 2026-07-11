@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { slugify } from '@/lib/utils';
+export { slugify };
 
 export function TipTapRenderer({ content }) {
   if (!content) return null;
