@@ -49,9 +49,11 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
         {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-          <span className="font-heading font-bold text-xl md:text-2xl tracking-tight bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-            InkFlow
-          </span>
+          <img
+            src="/logo.png"
+            alt="InkFlow"
+            className="h-15 w-auto dark:invert object-contain"
+          />
         </Link>
 
         {/* Desktop Navigation Links */}

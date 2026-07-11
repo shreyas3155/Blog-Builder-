@@ -5,10 +5,12 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { BlogForm } from '@/components/forms/BlogForm';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { useAlert } from '@/providers/AlertProvider';
 
 export default function CreateBlogPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { showAlert } = useAlert();
 
   // Create blog post mutation
   const createMutation = useMutation({
@@ -38,7 +40,7 @@ export default function CreateBlogPage() {
       router.push('/employee');
     },
     onError: (error) => {
-      alert(error.message || 'An error occurred while creating post.');
+      showAlert(error.message || 'An error occurred while creating post.', 'error');
     },
   });
 

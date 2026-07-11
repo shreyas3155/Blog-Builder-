@@ -79,8 +79,8 @@ export default function LoginPage() {
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
 
         <div className="text-center flex flex-col items-center gap-3 mb-8">
-          <Link href="/" className="font-heading font-extrabold text-2xl bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent tracking-tight">
-            InkFlow
+          <Link href="/" className="flex items-center justify-center">
+            <img src="/logo.png" alt="InkFlow" className="h-24 w-auto dark:invert object-contain" />
           </Link>
           <h2 className="text-lg font-bold text-foreground">Welcome Back</h2>
           <p className="text-xs text-muted-foreground max-w-xs">

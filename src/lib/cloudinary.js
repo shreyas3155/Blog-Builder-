@@ -1,5 +1,6 @@
 import { v2 as cloudinary } from 'cloudinary';
 
+// Explicit config in case CLOUDINARY_URL is not picked up
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,

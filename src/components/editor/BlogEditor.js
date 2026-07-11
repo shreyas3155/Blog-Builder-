@@ -10,6 +10,7 @@ import { TableRow } from '@tiptap/extension-table-row';
 import { TableHeader } from '@tiptap/extension-table-header';
 import { TableCell } from '@tiptap/extension-table-cell';
 import { useEffect, useState, useRef } from 'react';
+import { useAlert } from '@/providers/AlertProvider';
 import {
   Bold,
   Italic,
@@ -32,6 +33,7 @@ import {
 } from 'lucide-react';
 
 export function BlogEditor({ initialContent, onChange }) {
+  const { showAlert } = useAlert();
   const fileInputRef = useRef(null);
   const [wordCount, setWordCount] = useState(0);
   const [readingTime, setReadingTime] = useState(1);
@@ -152,7 +154,7 @@ export function BlogEditor({ initialContent, onChange }) {
 
       if (!res.ok) {
         const errData = await res.json();
-        alert(errData.message || 'Image upload failed.');
+        showAlert(errData.message || 'Image upload failed.', 'error');
         return;
       }
 
@@ -160,7 +162,7 @@ export function BlogEditor({ initialContent, onChange }) {
       editor.chain().focus().setImage({ src: data.url, alt: file.name }).run();
     } catch (err) {
       console.error(err);
-      alert('Network error uploading image.');
+      showAlert('Network error uploading image.', 'error');
     } finally {
       // Clear file input
       e.target.value = '';

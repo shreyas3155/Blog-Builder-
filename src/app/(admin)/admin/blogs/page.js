@@ -16,9 +16,11 @@ import {
   XCircle,
   Loader2
 } from 'lucide-react';
+import { useAlert } from '@/providers/AlertProvider';
 
 export default function AdminBlogsPage() {
   const queryClient = useQueryClient();
+  const { showAlert, showConfirm } = useAlert();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState('');
@@ -61,7 +63,7 @@ export default function AdminBlogsPage() {
       queryClient.invalidateQueries({ queryKey: ['admin-dashboard'] });
     },
     onError: (err) => {
-      alert(err.message || 'Operation failed');
+      showAlert(err.message || 'Operation failed', 'error');
     },
   });
 
@@ -79,7 +81,7 @@ export default function AdminBlogsPage() {
       queryClient.invalidateQueries({ queryKey: ['admin-dashboard'] });
     },
     onError: (err) => {
-      alert(err.message || 'Deletion failed');
+      showAlert(err.message || 'Deletion failed', 'error');
     },
   });
 
@@ -87,8 +89,9 @@ export default function AdminBlogsPage() {
     togglePublishMutation.mutate({ id, published: !currentStatus });
   };
 
-  const handleDelete = (id, title) => {
-    if (window.confirm(`Are you sure you want to permanently delete "${title}"? This cannot be undone.`)) {
+  const handleDelete = async (id, title) => {
+    const ok = await showConfirm(`Are you sure you want to permanently delete "${title}"? This cannot be undone.`);
+    if (ok) {
       deleteMutation.mutate(id);
     }
   };

@@ -1,17 +1,7 @@
 'use client';
 
 import React from 'react';
-
-// Simple helper to slugify headings for Table of Contents anchors
-export function slugify(text) {
-  return text
-    .toString()
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, '-') // Replace spaces with -
-    .replace(/[^\w\-]+/g, '') // Remove all non-word chars
-    .replace(/\-\-+/g, '-'); // Replace multiple - with single -
-}
+import { slugify } from '@/lib/utils';
 
 export function TipTapRenderer({ content }) {
   if (!content) return null;

@@ -2,10 +2,11 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { verifyToken } from '@/lib/jwt';
 import { cloudinary } from '@/lib/cloudinary';
+import { Readable } from 'stream';
 
 export async function POST(request) {
   try {
-    // 1. Authenticate the user (only authors/admins can upload images)
+    // 1. Authenticate — only EMPLOYEE or ADMIN can upload
     const cookieStore = await cookies();
     const token = cookieStore.get('token')?.value;
     if (!token) {
@@ -17,7 +18,7 @@ export async function POST(request) {
       return NextResponse.json({ message: 'Forbidden.' }, { status: 403 });
     }
 
-    // 2. Parse request formData
+    // 2. Parse multipart form
     const formData = await request.formData();
     const file = formData.get('file');
 
@@ -25,21 +26,17 @@ export async function POST(request) {
       return NextResponse.json({ message: 'No file uploaded.' }, { status: 400 });
     }
 
-    // Validate file type is image
     if (!file.type.startsWith('image/')) {
       return NextResponse.json({ message: 'Uploaded file must be an image.' }, { status: 400 });
     }
 
-    // 3. Convert file stream into Base64 URI for Cloudinary upload
+    // 3. Convert to Buffer
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    const base64Data = buffer.toString('base64');
-    const fileUri = `data:${file.type};base64,${base64Data}`;
 
-    // 4. Upload to Cloudinary
+    // 4. Upload via stream
     const uploadResult = await new Promise((resolve, reject) => {
-      cloudinary.uploader.upload(
-        fileUri,
+      const uploadStream = cloudinary.uploader.upload_stream(
         {
           folder: 'blog-builder-uploads',
           resource_type: 'image',
@@ -49,6 +46,12 @@ export async function POST(request) {
           resolve(result);
         }
       );
+
+      // Pipe the buffer into the upload stream
+      const readable = new Readable();
+      readable.push(buffer);
+      readable.push(null);
+      readable.pipe(uploadStream);
     });
 
     return NextResponse.json(

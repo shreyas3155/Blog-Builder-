@@ -37,8 +37,8 @@ export default function EmployeeLayout({ children }) {
       {/* 1. Sidebar Navigation (Desktop) */}
       <aside className="hidden lg:flex flex-col w-64 border-r border-border/60 bg-card p-6 flex-shrink-0">
         {/* Brand */}
-        <Link href="/" className="mb-8 font-heading font-bold text-2xl bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">
-          InkFlow
+        <Link href="/" className="mb-8 flex items-center gap-2">
+          <img src="/logo.png" alt="InkFlow" className="h-16 w-auto dark:invert object-contain" />
         </Link>
 
         {/* User Block */}
@@ -94,8 +94,8 @@ export default function EmployeeLayout({ children }) {
 
       {/* 2. Collapsible Mobile Header */}
       <header className="lg:hidden w-full bg-card border-b border-border/60 px-4 py-3 flex items-center justify-between">
-        <Link href="/employee" className="font-heading font-bold text-xl bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">
-          InkFlow
+        <Link href="/employee" className="flex items-center">
+          <img src="/logo.png" alt="InkFlow" className="h-12 w-auto dark:invert object-contain" />
         </Link>
         <div className="flex items-center gap-3">
           <Link href="/employee" className="text-xs font-bold text-muted-foreground hover:text-foreground">

@@ -5,8 +5,10 @@ import { useQuery } from '@tanstack/react-query';
 import { BlogEditor } from '@/components/editor/BlogEditor';
 import { slugify } from '@/components/editor/TipTapRenderer';
 import { Upload, X, Eye, FileText, CheckCircle, Save, Sparkles, RefreshCw } from 'lucide-react';
+import { useAlert } from '@/providers/AlertProvider';
 
 export function BlogForm({ initialData, onSave, isSaving }) {
+  const { showAlert } = useAlert();
   const fileInputRef = useRef(null);
   
   // 1. Form States
@@ -60,7 +62,7 @@ export function BlogForm({ initialData, onSave, isSaving }) {
 
       if (!res.ok) {
         const errData = await res.json();
-        alert(errData.message || 'Cover upload failed.');
+        showAlert(errData.message || 'Cover upload failed.', 'error');
         return;
       }
 
@@ -68,7 +70,7 @@ export function BlogForm({ initialData, onSave, isSaving }) {
       setCoverImage(data.url);
     } catch (err) {
       console.error(err);
-      alert('Error uploading cover image.');
+      showAlert('Error uploading cover image.', 'error');
     } finally {
       setUploadingCover(false);
       e.target.value = '';
@@ -152,7 +154,7 @@ export function BlogForm({ initialData, onSave, isSaving }) {
         setHasDraftToRestore(false);
       }
     } catch (e) {
-      alert('Failed to restore draft.');
+      showAlert('Failed to restore draft.', 'error');
     }
   };
 
@@ -163,8 +165,8 @@ export function BlogForm({ initialData, onSave, isSaving }) {
 
   const handleFormSubmit = (e, publishedState) => {
     e.preventDefault();
-    if (!title) return alert('Title is required.');
-    if (!categoryId) return alert('Please select a category.');
+    if (!title) { showAlert('Title is required.', 'warning'); return; }
+    if (!categoryId) { showAlert('Please select a category.', 'warning'); return; }
 
     onSave({
       title,

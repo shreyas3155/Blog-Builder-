@@ -14,9 +14,11 @@ import {
   X,
   UserPlus
 } from 'lucide-react';
+import { useAlert } from '@/providers/AlertProvider';
 
 export default function AdminEmployeesPage() {
   const queryClient = useQueryClient();
+  const { showAlert, showConfirm } = useAlert();
   const [isModalOpen, setIsModalOpen] = useState(false);
   
   // New Employee Form States
@@ -89,7 +91,7 @@ export default function AdminEmployeesPage() {
       queryClient.invalidateQueries({ queryKey: ['admin-dashboard'] });
     },
     onError: (err) => {
-      alert(err.message || 'Operation failed');
+      showAlert(err.message || 'Operation failed', 'error');
     },
   });
 
@@ -104,12 +106,11 @@ export default function AdminEmployeesPage() {
     createMutation.mutate({ name, email, password, role });
   };
 
-  const handleDelete = (id, employeeName) => {
-    if (
-      window.confirm(
-        `WARNING: Deleting employee "${employeeName}" will permanently remove their user account AND delete all articles they have written! Are you absolutely sure?`
-      )
-    ) {
+  const handleDelete = async (id, employeeName) => {
+    const ok = await showConfirm(
+      `WARNING: Deleting employee "${employeeName}" will permanently remove their user account AND delete all articles they have written! Are you absolutely sure?`
+    );
+    if (ok) {
       deleteMutation.mutate(id);
     }
   };

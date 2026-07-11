@@ -4,9 +4,11 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Edit2, Trash2, Eye, Heart, MessageSquare, ExternalLink, Calendar, Search, SlidersHorizontal } from 'lucide-react';
+import { useAlert } from '@/providers/AlertProvider';
 
 export function BlogsListTable({ blogs }) {
   const queryClient = useQueryClient();
+  const { showConfirm } = useAlert();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [sortBy, setSortBy] = useState('createdAt');
@@ -28,8 +30,9 @@ export function BlogsListTable({ blogs }) {
     },
   });
 
-  const handleDelete = (id, title) => {
-    if (window.confirm(`Are you sure you want to delete "${title}"? This action cannot be undone.`)) {
+  const handleDelete = async (id, title) => {
+    const ok = await showConfirm(`Are you sure you want to delete "${title}"? This action cannot be undone.`);
+    if (ok) {
       deleteMutation.mutate(id);
     }
   };

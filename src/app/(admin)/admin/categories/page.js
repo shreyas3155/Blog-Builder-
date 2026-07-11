@@ -10,9 +10,11 @@ import {
   Hash,
   Loader2
 } from 'lucide-react';
+import { useAlert } from '@/providers/AlertProvider';
 
 export default function AdminTaxonomyPage() {
   const queryClient = useQueryClient();
+  const { showAlert, showConfirm } = useAlert();
   const [newCategoryName, setNewCategoryName] = useState('');
   const [formError, setFormError] = useState('');
 
@@ -78,7 +80,7 @@ export default function AdminTaxonomyPage() {
       queryClient.invalidateQueries({ queryKey: ['admin-blogs'] }); // Blogs mapping changed
     },
     onError: (err) => {
-      alert(err.message || 'Operation failed');
+      showAlert(err.message || 'Operation failed', 'error');
     },
   });
 
@@ -96,7 +98,7 @@ export default function AdminTaxonomyPage() {
       queryClient.invalidateQueries({ queryKey: ['tags'] });
     },
     onError: (err) => {
-      alert(err.message || 'Operation failed');
+      showAlert(err.message || 'Operation failed', 'error');
     },
   });
 
@@ -108,14 +110,16 @@ export default function AdminTaxonomyPage() {
     createCategoryMutation.mutate(newCategoryName);
   };
 
-  const handleDeleteCategory = (id, name) => {
-    if (window.confirm(`Are you sure you want to delete category "${name}"? Blogs mapped to this category will be set to uncategorized.`)) {
+  const handleDeleteCategory = async (id, name) => {
+    const ok = await showConfirm(`Are you sure you want to delete category "${name}"? Blogs mapped to this category will be set to uncategorized.`);
+    if (ok) {
       deleteCategoryMutation.mutate(id);
     }
   };
 
-  const handleDeleteTag = (id, name) => {
-    if (window.confirm(`Are you sure you want to delete tag "#${name}"? This removes the tag indicator from all blogs.`)) {
+  const handleDeleteTag = async (id, name) => {
+    const ok = await showConfirm(`Are you sure you want to delete tag "#${name}"? This removes the tag indicator from all blogs.`);
+    if (ok) {
       deleteTagMutation.mutate(id);
     }
   };

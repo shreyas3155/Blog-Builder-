@@ -134,22 +134,27 @@ export default async function BlogDetailsPage({ params }) {
     <article className="relative w-full bg-background pt-8 pb-16">
 
       {/* ── Header Block ─────────────────────────────────────────────── */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Back link */}
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors mb-6"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" /> Back to explore
-        </Link>
+        <div className="mb-4">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" /> Back to explore
+          </Link>
+        </div>
 
         {/* Category badge */}
         {blog.category && (
-          <span className="inline-block text-[10px] font-extrabold tracking-wider uppercase px-2.5 py-1 bg-indigo-500/10 text-indigo-400 border border-indigo-500/25 rounded-md mb-4">
-            {blog.category.name}
-          </span>
+          <div className="mb-4">
+            <span className="inline-block text-[10px] font-extrabold tracking-wider uppercase px-2.5 py-1 bg-indigo-500/10 text-indigo-400 border border-indigo-500/25 rounded-md">
+              {blog.category.name}
+            </span>
+          </div>
         )}
+
 
         {/* Article title — rendered on server → indexed by Google */}
         <h1 className="font-heading font-extrabold text-3xl sm:text-4xl md:text-5xl text-foreground tracking-tight leading-[1.15] mb-6">
@@ -193,7 +198,7 @@ export default async function BlogDetailsPage({ params }) {
       </div>
 
       {/* ── Cover Image (static server HTML) ─────────────────────────── */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 mb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
         <div className="aspect-[21/9] w-full rounded-3xl border border-border/50 overflow-hidden bg-secondary/20 shadow-lg">
           <img
             src={blog.coverImage || 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?w=1200'}

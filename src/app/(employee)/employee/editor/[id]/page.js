@@ -5,12 +5,14 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { BlogForm } from '@/components/forms/BlogForm';
 import { ArrowLeft, Loader2, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
+import { useAlert } from '@/providers/AlertProvider';
 
 export default function UpdateBlogPage() {
   const params = useParams();
   const router = useRouter();
   const queryClient = useQueryClient();
   const blogId = params.id;
+  const { showAlert } = useAlert();
 
   // 1. Fetch initial blog post details by ID
   const { data: blogData, isLoading, error } = useQuery({
@@ -55,7 +57,7 @@ export default function UpdateBlogPage() {
       router.push('/employee');
     },
     onError: (error) => {
-      alert(error.message || 'An error occurred while updating post.');
+      showAlert(error.message || 'An error occurred while updating post.', 'error');
     },
   });
 
