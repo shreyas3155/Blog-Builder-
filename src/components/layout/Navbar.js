@@ -46,7 +46,7 @@ export function Navbar() {
           : 'bg-transparent border-b border-transparent'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      <div suppressHydrationWarning className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
         {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-2 flex-shrink-0 bg-white dark:bg-black px-3 py-1.5 rounded-xl border border-border/40 shadow-xs">
           <img
@@ -94,11 +94,11 @@ export function Navbar() {
         </form>
 
         {/* Right side items */}
-        <div className="hidden md:flex items-center gap-4 flex-shrink-0">
+        <div suppressHydrationWarning className="hidden md:flex items-center gap-4 flex-shrink-0">
           <ThemeToggle />
 
           {isLoading ? (
-            <div className="w-8 h-8 rounded-full bg-secondary/50 animate-pulse" />
+            <div suppressHydrationWarning className="w-8 h-8 rounded-full bg-secondary/50 animate-pulse" />
           ) : user ? (
             <div className="flex items-center gap-3">
               {(user.role === 'ADMIN' || user.role === 'EMPLOYEE') && (
@@ -155,7 +155,7 @@ export function Navbar() {
         </div>
 
         {/* Mobile menu controls */}
-        <div className="flex md:hidden items-center gap-2">
+        <div suppressHydrationWarning className="flex md:hidden items-center gap-2">
           <ThemeToggle />
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

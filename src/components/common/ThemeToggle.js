@@ -14,7 +14,7 @@ export function ThemeToggle() {
   }, []);
 
   if (!mounted) {
-    return <div className="w-9 h-9 rounded-lg bg-secondary/50" />;
+    return <div suppressHydrationWarning className="w-9 h-9 rounded-lg bg-secondary/50" />;
   }
 
   return (
