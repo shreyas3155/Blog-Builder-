@@ -27,8 +27,8 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 pb-8 border-b border-border/40">
           {/* Logo and Description */}
           <div className="md:col-span-2 flex flex-col gap-4">
-            <Link href="/" className="w-max">
-              <img src="/logo.png" alt="InkFlow" className="h-16 w-auto dark:invert object-contain" />
+            <Link href="/" className="w-max block bg-white dark:bg-black px-3 py-1.5 rounded-xl border border-border/40 shadow-xs">
+              <img src="/logo.png" alt="BlogBuilder" className="h-10 w-auto dark:invert object-contain" />
             </Link>
             <p className="text-sm text-muted-foreground max-w-sm leading-relaxed">
               A premium space where high-quality technical ideas meet design. Create, design, and share your developer journey.
@@ -97,7 +97,7 @@ export function Footer() {
         </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 text-xs text-muted-foreground">
-          <p>© {new Date().getFullYear()} InkFlow. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} BlogBuilder. All rights reserved.</p>
           <p className="flex items-center gap-1">
             Crafted with <Heart className="w-3 h-3 text-red-500 fill-red-500" /> for the modern web.
           </p>

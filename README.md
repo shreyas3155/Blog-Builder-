@@ -1,9 +1,9 @@
-# InkFlow - SaaS Blog Builder Platform
+# Inkflow - SaaS Blog Builder Platform
 
 A production-quality internal developer blogging platform (similar to Medium, Dev.to, and Vercel Dashboard) built as a Full-Stack hiring assignment submission.
 
 ## 1. Overview & Key Objectives
-InkFlow is a role-based internal publication system built to empower employees to draft and publish technical blogs, while giving administrators total authority to audit posts, manage staff accounts, and curate taxonomy tags/categories. The public interface prioritizes high-fidelity readability and beautiful visual aesthetics (Frosted glass filters, clean outfit typography, dark theme support, and custom inline brand vectors).
+Inkflow is a role-based internal publication system built to empower employees to draft and publish technical blogs, while giving administrators total authority to audit posts, manage staff accounts, and curate taxonomy tags/categories. The public interface prioritizes high-fidelity readability and beautiful visual aesthetics (Frosted glass filters, clean outfit typography, dark theme support, and custom inline brand vectors).
 
 ---
 
@@ -114,13 +114,13 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 Run `npx prisma db seed` to populate the database with these logins:
 
 *   **Administrator**:
-    *   Email: `admin@blogbuilder.com`
+    *   Email: `admin@Inkflow.com`
     *   Password: `password123`
 *   **Employee Writer**:
-    *   Email: `employee@blogbuilder.com`
+    *   Email: `employee@Inkflow.com`
     *   Password: `password123`
 *   **Reader Customer**:
-    *   Email: `reader@blogbuilder.com`
+    *   Email: `reader@Inkflow.com`
     *   Password: `password123`
 
 ---

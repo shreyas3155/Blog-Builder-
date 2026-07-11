@@ -1,18 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter, usePathname } from 'next/navigation';
 import { BlogCard, BlogCardSkeleton } from '@/components/cards/BlogCard';
 import { Search, LayoutGrid, AlertCircle } from 'lucide-react';
+import { Pagination } from '@/components/ui/Pagination';
 
-export function BlogsFeedClient({ initialBlogs, initialCategories, initialCategory, initialSearch }) {
+export function BlogsFeedClient({ initialBlogs, initialCategories, initialCategory, initialSearch, initialTotal }) {
   const router = useRouter();
   const pathname = usePathname();
 
   const [selectedCategory, setSelectedCategory] = useState(initialCategory || null);
   const [searchQuery, setSearchQuery] = useState(initialSearch || '');
   const [debouncedSearch, setDebouncedSearch] = useState(initialSearch || '');
+  const [page, setPage] = useState(1);
 
   // Debounce search input
   const handleSearchChange = (val) => {
@@ -21,7 +23,12 @@ export function BlogsFeedClient({ initialBlogs, initialCategories, initialCatego
     return () => clearTimeout(timeout);
   };
 
-  const isDefaultView = !selectedCategory && !debouncedSearch;
+  // Reset page to 1 on category or search query change
+  useEffect(() => {
+    setPage(1);
+  }, [selectedCategory, debouncedSearch]);
+
+  const isDefaultView = !selectedCategory && !debouncedSearch && page === 1;
 
   // Categories — seeded with server data
   const { data: categoriesData } = useQuery({
@@ -35,23 +42,32 @@ export function BlogsFeedClient({ initialBlogs, initialCategories, initialCatego
     staleTime: 60 * 1000,
   });
 
-  // Blogs — seeded with server data, refetches on filter change
+  // Blogs — seeded with server data, refetches on filter/page change
   const { data: blogsData, isLoading: blogsLoading, error: blogsError } = useQuery({
-    queryKey: ['blogs', selectedCategory, debouncedSearch],
+    queryKey: ['blogs', selectedCategory, debouncedSearch, page],
     queryFn: async () => {
-      let url = '/api/blogs?limit=12';
+      let url = `/api/blogs?limit=12&page=${page}`;
       if (selectedCategory) url += `&category=${encodeURIComponent(selectedCategory)}`;
       if (debouncedSearch) url += `&search=${encodeURIComponent(debouncedSearch)}`;
       const res = await fetch(url);
       if (!res.ok) throw new Error('Failed to fetch blogs');
       return res.json();
     },
-    initialData: isDefaultView ? { blogs: initialBlogs } : undefined,
+    initialData: isDefaultView && initialBlogs && initialBlogs.length > 0 ? {
+      blogs: initialBlogs,
+      pagination: {
+        total: initialTotal,
+        totalPages: Math.ceil(initialTotal / 12),
+        page: 1,
+        limit: 12,
+      }
+    } : undefined,
     staleTime: 30 * 1000,
   });
 
   const categories = categoriesData?.categories || [];
   const blogs = blogsData?.blogs || [];
+  const pagination = blogsData?.pagination || { total: 0, totalPages: 1 };
 
   return (
     <>
@@ -116,9 +132,16 @@ export function BlogsFeedClient({ initialBlogs, initialCategories, initialCatego
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {blogs.map((blog) => <BlogCard key={blog.id} blog={blog} />)}
-          </div>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {blogs.map((blog) => <BlogCard key={blog.id} blog={blog} />)}
+            </div>
+            <Pagination
+              currentPage={page}
+              totalPages={pagination.totalPages}
+              onPageChange={setPage}
+            />
+          </>
         )}
       </div>
     </>

@@ -23,6 +23,9 @@ export async function GET(request) {
     const search = searchParams.get('search') || '';
     const status = searchParams.get('status'); // all, draft, published
     const categoryId = searchParams.get('category');
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = parseInt(searchParams.get('limit') || '10', 10);
+    const skip = (page - 1) * limit;
 
     // Filters
     const where = {};
@@ -44,37 +47,52 @@ export async function GET(request) {
       where.categoryId = categoryId;
     }
 
-    const blogs = await prisma.blog.findMany({
-      where,
-      orderBy: {
-        createdAt: 'desc',
-      },
-      include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            avatar: true,
-            email: true,
+    const [blogs, total] = await Promise.all([
+      prisma.blog.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: {
+          createdAt: 'desc',
+        },
+        include: {
+          author: {
+            select: {
+              id: true,
+              name: true,
+              avatar: true,
+              email: true,
+            },
+          },
+          category: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          _count: {
+            select: {
+              views: true,
+              likes: true,
+              comments: true,
+            },
           },
         },
-        category: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        _count: {
-          select: {
-            views: true,
-            likes: true,
-            comments: true,
-          },
-        },
-      },
-    });
+      }),
+      prisma.blog.count({ where })
+    ]);
 
-    return NextResponse.json({ blogs }, { status: 200 });
+    const totalPages = Math.ceil(total / limit);
+
+    return NextResponse.json({
+      blogs,
+      pagination: {
+        total,
+        totalPages,
+        page,
+        limit,
+      }
+    }, { status: 200 });
   } catch (error) {
     console.error('Admin blogs list error:', error);
     return NextResponse.json(

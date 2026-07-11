@@ -10,11 +10,11 @@ export const revalidate = 60;
 
 // ─── Static Metadata ─────────────────────────────────────────────────────────
 export const metadata = {
-  title: 'InkFlow — Where Creative Minds Meet High-Quality Execution',
+  title: 'BlogBuilder — Where Creative Minds Meet High-Quality Execution',
   description:
-    'InkFlow is a modern SaaS blogging platform built for developer tools, design systems, and software engineering insights. Completely responsive, glassmorphic, and blazing fast.',
+    'BlogBuilder is a modern SaaS blogging platform built for developer tools, design systems, and software engineering insights. Completely responsive, glassmorphic, and blazing fast.',
   openGraph: {
-    title: 'InkFlow — Modern Developer Blog Platform',
+    title: 'BlogBuilder — Modern Developer Blog Platform',
     description: 'Discover articles by top contributors across development, design, and product engineering.',
     type: 'website',
   },
@@ -67,7 +67,7 @@ export default async function LandingPage() {
         </h1>
 
         <p className="text-base sm:text-lg text-muted-foreground max-w-2xl leading-relaxed mb-10">
-          InkFlow is a modern SaaS blogging platform built for developer tools, design systems, and software engineering
+          BlogBuilder is a modern SaaS blogging platform built for developer tools, design systems, and software engineering
           insights. Completely responsive, glassmorphic, and blazing fast.
         </p>
 
@@ -83,7 +83,7 @@ export default async function LandingPage() {
             href="/register"
             className="w-full sm:w-auto px-8 py-3.5 border border-border/80 hover:bg-secondary/40 font-semibold rounded-xl text-sm transition-all flex items-center justify-center gap-1.5"
           >
-            Join InkFlow
+            Join BlogBuilder
           </Link>
         </div>
       </section>

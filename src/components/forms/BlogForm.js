@@ -94,7 +94,7 @@ export function BlogForm({ initialData, onSave, isSaving }) {
   };
 
   // 4. Local Storage Auto-save feature
-  const getDraftKey = () => `inkflow-draft-${initialData?.id || 'new'}`;
+  const getDraftKey = () => `BlogBuilder-draft-${initialData?.id || 'new'}`;
 
   // Check if a newer local storage draft exists on mount
   useEffect(() => {
@@ -224,7 +224,7 @@ export function BlogForm({ initialData, onSave, isSaving }) {
         <div className="text-xs text-muted-foreground flex items-center gap-1.5 -mt-2">
           <span className="font-bold">Slug preview:</span>
           <span className="bg-secondary/35 border border-border/30 px-2 py-0.5 rounded text-[11px] select-all font-mono">
-            https://inkflow.com/blogs/{slug || 'untitled-slug'}
+            https://BlogBuilder.com/blogs/{slug || 'untitled-slug'}
           </span>
         </div>
 
@@ -393,10 +393,10 @@ export function BlogForm({ initialData, onSave, isSaving }) {
           </h4>
           <div className="p-4 bg-secondary/15 border border-border/30 rounded-xl flex flex-col gap-1 text-left select-none font-sans leading-normal">
             <span className="text-[11px] text-muted-foreground truncate font-mono">
-              https://inkflow.com › blogs › {slug || 'untitled-slug'}
+              https://BlogBuilder.com › blogs › {slug || 'untitled-slug'}
             </span>
             <span className="text-sm font-medium text-blue-500 dark:text-blue-400 truncate hover:underline cursor-pointer">
-              {title || 'Untitled Post - Write a Title'} | InkFlow
+              {title || 'Untitled Post - Write a Title'} | BlogBuilder
             </span>
             <p className="text-xs text-muted-foreground/80 line-clamp-2 leading-relaxed">
               {excerpt || 'Write an article excerpt to display as the meta description in search engine results.'}

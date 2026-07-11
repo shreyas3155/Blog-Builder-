@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { RegisterSchema } from '@/schemas/auth';
-import { User, Mail, Lock, ArrowRight, Loader2, Sparkles } from 'lucide-react';
+import { User, Mail, Lock, ArrowRight, Loader2, Sparkles, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -13,6 +13,7 @@ export default function RegisterPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [apiError, setApiError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   // Setup react-hook-form
   const {
@@ -75,8 +76,8 @@ export default function RegisterPage() {
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
 
         <div className="text-center flex flex-col items-center gap-3 mb-8">
-          <Link href="/" className="flex items-center justify-center">
-            <img src="/logo.png" alt="InkFlow" className="h-24 w-auto dark:invert object-contain" />
+          <Link href="/" className="flex items-center justify-center bg-white dark:bg-black px-4 py-2 rounded-2xl border border-border/40 shadow-xs w-max mx-auto">
+            <img src="/logo.png" alt="BlogBuilder" className="h-16 w-auto dark:invert object-contain" />
           </Link>
           <h2 className="text-lg font-bold text-foreground">Create Account</h2>
           <p className="text-xs text-muted-foreground max-w-xs">
@@ -133,12 +134,25 @@ export default function RegisterPage() {
               <Lock className="w-3 h-3 text-indigo-500" />
               Password
             </label>
-            <input
-              type="password"
-              placeholder="••••••••"
-              {...register('password')}
-              className="w-full px-4 py-2.5 bg-secondary/15 border border-border/40 focus:border-indigo-500 rounded-xl text-xs outline-none transition-all text-foreground"
-            />
+            <div className="relative flex items-center">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                placeholder="••••••••"
+                {...register('password')}
+                className="w-full pl-4 pr-10 py-2.5 bg-secondary/15 border border-border/40 focus:border-indigo-500 rounded-xl text-xs outline-none transition-all text-foreground"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 text-muted-foreground hover:text-foreground cursor-pointer focus:outline-none transition-all select-none"
+              >
+                {showPassword ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
+              </button>
+            </div>
             {errors.password && (
               <span className="text-[10px] text-red-500 font-bold mt-0.5">{errors.password.message}</span>
             )}

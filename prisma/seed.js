@@ -58,7 +58,7 @@ async function main() {
   const admin = await prisma.user.create({
     data: {
       name: 'Sarah Connor',
-      email: 'admin@blogbuilder.com',
+      email: 'admin@Inkflow.com',
       passwordHash,
       role: 'ADMIN',
       avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
@@ -68,7 +68,7 @@ async function main() {
   const employee = await prisma.user.create({
     data: {
       name: 'Alex Mercer',
-      email: 'employee@blogbuilder.com',
+      email: 'employee@Inkflow.com',
       passwordHash,
       role: 'EMPLOYEE',
       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
@@ -78,7 +78,7 @@ async function main() {
   const reader = await prisma.user.create({
     data: {
       name: 'Jane Doe',
-      email: 'reader@blogbuilder.com',
+      email: 'reader@Inkflow.com',
       passwordHash,
       role: 'READER',
       avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150',

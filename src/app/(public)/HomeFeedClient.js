@@ -42,7 +42,7 @@ export function HomeFeedClient({ initialBlogs, initialCategories }) {
       if (!res.ok) throw new Error('Failed to fetch blogs');
       return res.json();
     },
-    initialData: !isFiltered ? { blogs: initialBlogs } : undefined,
+    initialData: !isFiltered && initialBlogs && initialBlogs.length > 0 ? { blogs: initialBlogs } : undefined,
     staleTime: 30 * 1000,
   });
 

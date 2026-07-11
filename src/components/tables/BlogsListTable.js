@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Edit2, Trash2, Eye, Heart, MessageSquare, ExternalLink, Calendar, Search, SlidersHorizontal } from 'lucide-react';
 import { useAlert } from '@/providers/AlertProvider';
+import { Pagination } from '@/components/ui/Pagination';
 
 export function BlogsListTable({ blogs }) {
   const queryClient = useQueryClient();
@@ -13,6 +14,12 @@ export function BlogsListTable({ blogs }) {
   const [statusFilter, setStatusFilter] = useState('all');
   const [sortBy, setSortBy] = useState('createdAt');
   const [sortOrder, setSortOrder] = useState('desc');
+  const [page, setPage] = useState(1);
+
+  // Reset page to 1 on filters or sorting change
+  useEffect(() => {
+    setPage(1);
+  }, [searchTerm, statusFilter, sortBy, sortOrder]);
 
   // Delete blog mutation
   const deleteMutation = useMutation({
@@ -80,6 +87,10 @@ export function BlogsListTable({ blogs }) {
       return 0;
     });
 
+  const itemsPerPage = 8;
+  const totalPages = Math.ceil(filteredBlogs.length / itemsPerPage);
+  const paginatedBlogs = filteredBlogs.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+
   return (
     <div className="w-full flex flex-col gap-4">
       {/* Search and Filters Bar */}
@@ -145,14 +156,14 @@ export function BlogsListTable({ blogs }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-border/30 text-sm">
-              {filteredBlogs.length === 0 ? (
+              {paginatedBlogs.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="p-12 text-center text-muted-foreground italic">
                     No articles found matching filters.
                   </td>
                 </tr>
               ) : (
-                filteredBlogs.map((blog) => (
+                paginatedBlogs.map((blog) => (
                   <tr key={blog.id} className="hover:bg-secondary/5 transition-colors">
                     {/* Title and Thumbnail */}
                     <td className="p-4 min-w-[280px]">
@@ -258,6 +269,11 @@ export function BlogsListTable({ blogs }) {
           </table>
         </div>
       </div>
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={setPage}
+      />
     </div>
   );
 }

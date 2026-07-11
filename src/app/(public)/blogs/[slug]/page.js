@@ -24,11 +24,11 @@ export async function generateMetadata({ params }) {
     },
   });
 
-  if (!blog) return { title: 'Article Not Found | InkFlow' };
+  if (!blog) return { title: 'Article Not Found | BlogBuilder' };
 
   return {
-    title: `${blog.title} | InkFlow`,
-    description: blog.excerpt || `Read ${blog.title} on InkFlow.`,
+    title: `${blog.title} | BlogBuilder`,
+    description: blog.excerpt || `Read ${blog.title} on BlogBuilder.`,
     openGraph: {
       title: blog.title,
       description: blog.excerpt || '',

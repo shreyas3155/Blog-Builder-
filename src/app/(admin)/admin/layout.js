@@ -37,8 +37,8 @@ export default function AdminLayout({ children }) {
       {/* 1. Sidebar Navigation (Desktop) */}
       <aside className="hidden lg:flex flex-col w-64 border-r border-border/60 bg-card p-6 flex-shrink-0">
         {/* Brand Logo */}
-        <Link href="/" className="mb-8 flex items-center gap-2">
-          <img src="/logo.png" alt="InkFlow" className="h-16 w-auto dark:invert object-contain" />
+        <Link href="/" className="mb-8 flex items-center gap-2 bg-white dark:bg-black px-3 py-1.5 rounded-xl border border-border/40 shadow-xs w-max">
+          <img src="/logo.png" alt="BlogBuilder" className="h-10 w-auto dark:invert object-contain" />
           <span className="text-[10px] font-black uppercase tracking-widest text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-1.5 py-0.5 rounded">Admin</span>
         </Link>
 
@@ -109,8 +109,8 @@ export default function AdminLayout({ children }) {
 
       {/* 2. Collapsible Mobile Header */}
       <header className="lg:hidden w-full bg-card border-b border-border/60 px-4 py-3 flex items-center justify-between">
-        <Link href="/admin" className="flex items-center gap-2">
-          <img src="/logo.png" alt="InkFlow" className="h-12 w-auto dark:invert object-contain" />
+        <Link href="/admin" className="flex items-center gap-2 bg-white dark:bg-black px-2.5 py-1 rounded-xl border border-border/40 shadow-xs w-max">
+          <img src="/logo.png" alt="BlogBuilder" className="h-8 w-auto dark:invert object-contain" />
           <span className="text-[9px] font-black uppercase tracking-widest text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-1.5 py-0.5 rounded">Admin</span>
         </Link>
         <div className="flex items-center gap-3">

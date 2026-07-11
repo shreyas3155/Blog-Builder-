@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import {
@@ -17,6 +17,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { useAlert } from '@/providers/AlertProvider';
+import { Pagination } from '@/components/ui/Pagination';
 
 export default function AdminBlogsPage() {
   const queryClient = useQueryClient();
@@ -24,17 +25,28 @@ export default function AdminBlogsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState('');
+  const [page, setPage] = useState(1);
 
-  // 1. Fetch all blogs (admin lists everything)
+  // Reset page to 1 when filters or search term change
+  useEffect(() => {
+    setPage(1);
+  }, [searchTerm, statusFilter, categoryFilter]);
+
+  // 1. Fetch platform blogs with pagination & filters
   const { data: blogsData, isLoading } = useQuery({
-    queryKey: ['admin-blogs'],
+    queryKey: ['admin-blogs', page, searchTerm, statusFilter, categoryFilter],
     queryFn: async () => {
-      const res = await fetch('/api/admin/blogs');
+      let url = `/api/admin/blogs?limit=10&page=${page}`;
+      if (searchTerm) url += `&search=${encodeURIComponent(searchTerm)}`;
+      if (statusFilter !== 'all') url += `&status=${statusFilter}`;
+      if (categoryFilter) url += `&category=${categoryFilter}`;
+      const res = await fetch(url);
       if (!res.ok) throw new Error('Failed to fetch platform blogs');
       return res.json();
     },
   });
   const blogs = blogsData?.blogs || [];
+  const pagination = blogsData?.pagination || { total: 0, totalPages: 1 };
 
   // Fetch categories for filter dropdown
   const { data: categoriesData } = useQuery({
@@ -96,17 +108,8 @@ export default function AdminBlogsPage() {
     }
   };
 
-  // 4. Filtering in-memory
-  const filteredBlogs = blogs.filter((blog) => {
-    const matchesSearch = blog.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus =
-      statusFilter === 'all' ||
-      (statusFilter === 'published' && blog.published) ||
-      (statusFilter === 'draft' && !blog.published);
-    const matchesCategory = !categoryFilter || blog.categoryId === categoryFilter;
-
-    return matchesSearch && matchesStatus && matchesCategory;
-  });
+  // 4. Server-side filtered blogs list
+  const filteredBlogs = blogs;
 
   return (
     <div className="w-full flex flex-col gap-6">
@@ -191,7 +194,8 @@ export default function AdminBlogsPage() {
           <span className="text-xs text-muted-foreground font-semibold">Loading platform articles...</span>
         </div>
       ) : (
-        <div className="w-full border border-border/40 rounded-2xl overflow-hidden bg-card shadow-sm">
+        <>
+          <div className="w-full border border-border/40 rounded-2xl overflow-hidden bg-card shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left text-sm">
               <thead>
@@ -325,6 +329,12 @@ export default function AdminBlogsPage() {
             </table>
           </div>
         </div>
+        <Pagination
+          currentPage={page}
+          totalPages={pagination.totalPages}
+          onPageChange={setPage}
+        />
+        </>
       )}
     </div>
   );

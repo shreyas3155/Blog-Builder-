@@ -6,14 +6,14 @@ export async function generateMetadata({ searchParams }) {
   const { category, search } = await searchParams;
   const description =
     category || search
-      ? `Browse InkFlow articles filtered by ${category ? `category: ${category}` : ''}${search ? ` search: ${search}` : ''}.`
+      ? `Browse BlogBuilder articles filtered by ${category ? `category: ${category}` : ''}${search ? ` search: ${search}` : ''}.`
       : 'Discover articles, tutorials, and insights written by top contributors across development, design, and product engineering.';
 
   return {
-    title: 'Explore Articles | InkFlow',
+    title: 'Explore Articles | BlogBuilder',
     description,
     openGraph: {
-      title: 'Explore Articles | InkFlow',
+      title: 'Explore Articles | BlogBuilder',
       description,
       type: 'website',
     },
@@ -35,7 +35,7 @@ export default async function BlogsPage({ searchParams }) {
   }
 
   // Fetch both in parallel — direct DB query, no API round-trip
-  const [blogsResult, categoriesResult] = await Promise.all([
+  const [blogsResult, categoriesResult, totalBlogs] = await Promise.all([
     prisma.blog.findMany({
       where,
       take: 12,
@@ -51,6 +51,7 @@ export default async function BlogsPage({ searchParams }) {
       orderBy: { name: 'asc' },
       include: { _count: { select: { blogs: true } } },
     }),
+    prisma.blog.count({ where }),
   ]);
 
   // Serialize Dates for client boundary
@@ -78,6 +79,7 @@ export default async function BlogsPage({ searchParams }) {
           initialCategories={initialCategories}
           initialCategory={category || null}
           initialSearch={search || ''}
+          initialTotal={totalBlogs}
         />
       </div>
     </div>

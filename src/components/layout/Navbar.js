@@ -48,11 +48,11 @@ export function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-2 flex-shrink-0">
+        <Link href="/" className="flex items-center gap-2 flex-shrink-0 bg-white dark:bg-black px-3 py-1.5 rounded-xl border border-border/40 shadow-xs">
           <img
             src="/logo.png"
-            alt="InkFlow"
-            className="h-15 w-auto dark:invert object-contain"
+            alt="BlogBuilder"
+            className="h-10 w-auto dark:invert object-contain"
           />
         </Link>
 
