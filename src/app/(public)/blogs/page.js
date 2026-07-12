@@ -3,10 +3,10 @@ import { BlogsFeedClient } from './BlogsFeedClient';
 
 // ─── Dynamic Metadata ─────────────────────────────────────────────────────────
 export async function generateMetadata({ searchParams }) {
-  const { category, search } = await searchParams;
+  const { category, search, tag } = await searchParams;
   const description =
-    category || search
-      ? `Browse BlogBuilder articles filtered by ${category ? `category: ${category}` : ''}${search ? ` search: ${search}` : ''}.`
+    category || search || tag
+      ? `Browse BlogBuilder articles filtered by ${category ? `category: ${category}` : ''}${tag ? ` tag: ${tag}` : ''}${search ? ` search: ${search}` : ''}.`
       : 'Discover articles, tutorials, and insights written by top contributors across development, design, and product engineering.';
 
   return {
@@ -22,11 +22,18 @@ export async function generateMetadata({ searchParams }) {
 
 // ─── Server Component Page ────────────────────────────────────────────────────
 export default async function BlogsPage({ searchParams }) {
-  const { category, search } = await searchParams;
+  const { category, search, tag } = await searchParams;
 
   // Build initial Prisma filter matching any URL params (e.g. /blogs?category=react)
   const where = { published: true };
   if (category) where.category = { slug: category };
+  if (tag) {
+    where.tags = {
+      some: {
+        slug: tag,
+      },
+    };
+  }
   if (search) {
     where.OR = [
       { title: { contains: search, mode: 'insensitive' } },
@@ -35,7 +42,7 @@ export default async function BlogsPage({ searchParams }) {
   }
 
   // Fetch both in parallel — direct DB query, no API round-trip
-  const [blogsResult, categoriesResult, totalBlogs] = await Promise.all([
+  const [blogsResult, categoriesResult, tagsResult, totalBlogs] = await Promise.all([
     prisma.blog.findMany({
       where,
       take: 12,
@@ -51,12 +58,34 @@ export default async function BlogsPage({ searchParams }) {
       orderBy: { name: 'asc' },
       include: { _count: { select: { blogs: true } } },
     }),
+    prisma.tag.findMany({
+      orderBy: { name: 'asc' },
+      where: {
+        blogs: {
+          some: {
+            published: true,
+          },
+        },
+      },
+      include: {
+        _count: {
+          select: {
+            blogs: {
+              where: {
+                published: true,
+              },
+            },
+          },
+        },
+      },
+    }),
     prisma.blog.count({ where }),
   ]);
 
   // Serialize Dates for client boundary
   const initialBlogs = JSON.parse(JSON.stringify(blogsResult));
   const initialCategories = JSON.parse(JSON.stringify(categoriesResult));
+  const initialTags = JSON.parse(JSON.stringify(tagsResult));
 
   return (
     <div className="w-full min-h-screen bg-background py-10">
@@ -77,7 +106,9 @@ export default async function BlogsPage({ searchParams }) {
         <BlogsFeedClient
           initialBlogs={initialBlogs}
           initialCategories={initialCategories}
+          initialTags={initialTags}
           initialCategory={category || null}
+          initialTag={tag || null}
           initialSearch={search || ''}
           initialTotal={totalBlogs}
         />

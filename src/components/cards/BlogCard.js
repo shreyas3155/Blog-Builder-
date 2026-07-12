@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { calculateReadingTime } from '@/utils/readingTime';
 import { Calendar, Clock, Eye, Heart, MessageSquare, ArrowRight } from 'lucide-react';
 
@@ -18,14 +19,15 @@ export function BlogCard({ blog }) {
     <article className="group relative flex flex-col h-full bg-card rounded-2xl border border-border/50 hover:border-indigo-500/40 shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 overflow-hidden transition-all duration-300">
       {/* Cover Image */}
       <Link href={`/blogs/${blog.slug}`} className="relative block aspect-video overflow-hidden bg-secondary/20">
-        <img
+        <Image
           src={blog.coverImage || 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?w=600'}
           alt={blog.title}
-          className="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-500"
-          loading="lazy"
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-cover transform group-hover:scale-105 transition-transform duration-500"
         />
         {blog.category && (
-          <span className="absolute top-3 left-3 text-[10px] font-bold tracking-wide uppercase px-2 py-1 bg-background/90 backdrop-blur-md text-foreground border border-border/40 rounded-md">
+          <span className="absolute top-3 left-3 text-[10px] font-bold tracking-wide uppercase px-2 py-1 bg-background/90 backdrop-blur-md text-foreground border border-border/40 rounded-md z-10">
             {blog.category.name}
           </span>
         )}
@@ -59,10 +61,12 @@ export function BlogCard({ blog }) {
         <div className="mt-auto pt-4 border-t border-border/40 flex items-center justify-between gap-4">
           {/* Author avatar */}
           <div className="flex items-center gap-2.5 min-w-0">
-            <img
+            <Image
               src={blog.author?.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'}
-              alt={blog.author?.name}
-              className="w-7 h-7 rounded-full object-cover border border-border flex-shrink-0"
+              alt={blog.author?.name || 'Author'}
+              width={28}
+              height={28}
+              className="rounded-full object-cover border border-border flex-shrink-0"
             />
             <span className="text-xs font-semibold text-foreground truncate">
               {blog.author?.name}

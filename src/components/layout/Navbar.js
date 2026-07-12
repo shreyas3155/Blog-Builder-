@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
@@ -112,10 +113,12 @@ export function Navbar() {
               )}
               {/* Profile Avatar */}
               <div className="group relative flex items-center">
-                <img
+                <Image
                   src={user.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'}
-                  alt={user.name}
-                  className="w-8 h-8 rounded-full object-cover border border-border cursor-pointer"
+                  alt={user.name || 'Profile'}
+                  width={32}
+                  height={32}
+                  className="rounded-full object-cover border border-border cursor-pointer"
                 />
                 {/* Dropdown on Hover */}
                 <div className="absolute right-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">

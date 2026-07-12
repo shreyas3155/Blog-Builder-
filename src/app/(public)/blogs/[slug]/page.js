@@ -10,6 +10,7 @@ import { CommentsClient } from './CommentsClient';
 import { SharePanelClient } from './BlogInteractionsClient';
 import { Calendar, Clock, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 // ─── Dynamic SEO Metadata ────────────────────────────────────────────────────
 export async function generateMetadata({ params }) {
@@ -165,10 +166,12 @@ export default async function BlogDetailsPage({ params }) {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-6 border-y border-border/50 mb-10">
           {/* Author info — pure server HTML */}
           <div className="flex items-center gap-3">
-            <img
+            <Image
               src={blog.author?.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'}
-              alt={blog.author?.name}
-              className="w-10 h-10 rounded-full object-cover border border-border"
+              alt={blog.author?.name || 'Author'}
+              width={40}
+              height={40}
+              className="rounded-full object-cover border border-border"
             />
             <div>
               <p className="text-sm font-bold">{blog.author?.name}</p>
@@ -199,11 +202,14 @@ export default async function BlogDetailsPage({ params }) {
 
       {/* ── Cover Image (static server HTML) ─────────────────────────── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
-        <div className="aspect-[21/9] w-full rounded-3xl border border-border/50 overflow-hidden bg-secondary/20 shadow-lg">
-          <img
+        <div className="relative aspect-[21/9] w-full rounded-3xl border border-border/50 overflow-hidden bg-secondary/20 shadow-lg">
+          <Image
             src={blog.coverImage || 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?w=1200'}
             alt={blog.title}
-            className="w-full h-full object-cover"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
           />
         </div>
       </div>
@@ -228,6 +234,21 @@ export default async function BlogDetailsPage({ params }) {
           <div className="article-body">
             <TipTapRenderer content={blog.content} />
           </div>
+
+          {/* Article Tags */}
+          {blog.tags && blog.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-8 pb-4 border-b border-border/30">
+              {blog.tags.map((tag) => (
+                <Link
+                  key={tag.id}
+                  href={`/blogs?tag=${encodeURIComponent(tag.slug)}`}
+                  className="px-3 py-1 bg-secondary/15 hover:bg-secondary/35 text-muted-foreground hover:text-foreground border border-border/40 rounded-lg text-xs font-semibold transition-all shadow-sm"
+                >
+                  #{tag.name}
+                </Link>
+              ))}
+            </div>
+          )}
 
           {/* Mobile share (rendered inside BlogInteractionsClient) */}
 
@@ -275,10 +296,12 @@ export default async function BlogDetailsPage({ params }) {
               About the Author
             </h4>
             <div className="p-6 border border-border/40 bg-secondary/15 rounded-2xl text-center flex flex-col items-center">
-              <img
+              <Image
                 src={blog.author?.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'}
-                alt={blog.author?.name}
-                className="w-16 h-16 rounded-full object-cover border border-border mb-4"
+                alt={blog.author?.name || 'Author'}
+                width={64}
+                height={64}
+                className="rounded-full object-cover border border-border mb-4"
               />
               <h5 className="font-bold text-sm mb-1">{blog.author?.name}</h5>
               <span className="inline-block text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded mb-4">
