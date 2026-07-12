@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { BlogEditor } from '@/components/editor/BlogEditor';
-import { slugify } from '@/components/editor/TipTapRenderer';
+import { slugify } from '@/lib/utils';
 import { Upload, X, Eye, FileText, CheckCircle, Save, Sparkles, RefreshCw } from 'lucide-react';
 import { useAlert } from '@/providers/AlertProvider';
 

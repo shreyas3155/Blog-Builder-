@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { calculateReadingTime } from '@/utils/readingTime';
-import { Calendar, Clock, Eye, Heart, MessageSquare, ArrowRight } from 'lucide-react';
+import { Calendar, Clock, Eye, Heart, MessageSquare } from 'lucide-react';
 
 export function BlogCard({ blog }) {
   const readTime = calculateReadingTime(blog.content);
