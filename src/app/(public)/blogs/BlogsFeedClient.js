@@ -155,7 +155,7 @@ export function BlogsFeedClient({ initialBlogs, initialCategories, initialTags, 
                     : 'bg-secondary/15 text-muted-foreground border-border/30 hover:bg-secondary/35 hover:text-foreground'
                 }`}
               >
-                #{tg.name} ({tg._count?.blogs?.length || tg._count?.blogs || 0})
+                #{tg.name} ({tg._count?.blogs || 0})
               </button>
             ))}
           </div>

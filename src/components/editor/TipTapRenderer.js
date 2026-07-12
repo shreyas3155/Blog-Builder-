@@ -141,6 +141,9 @@ export function TipTapRenderer({ content }) {
       case 'horizontalRule':
         return <hr key={index} className="my-8 border-t border-border/40" />;
 
+      case 'hardBreak':
+        return <br key={index} />;
+
       case 'image':
         return (
           <div key={index} className="my-8 flex flex-col items-center">
