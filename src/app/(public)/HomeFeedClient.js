@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import Image from 'next/image';
 import { BlogCard, BlogCardSkeleton } from '@/components/cards/BlogCard';
 import { Search, Flame, LayoutGrid, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
@@ -105,10 +106,13 @@ export function HomeFeedClient({ initialBlogs, initialCategories }) {
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 bg-card border border-border/50 rounded-3xl overflow-hidden hover:shadow-xl hover:border-indigo-500/20 transition-all duration-300">
             <Link href={`/blogs/${featuredBlog.slug}`} className="lg:col-span-7 aspect-video lg:aspect-auto relative block overflow-hidden bg-secondary/10">
-              <img
+              <Image
                 src={featuredBlog.coverImage || 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200'}
                 alt={featuredBlog.title}
-                className="object-cover w-full h-full hover:scale-105 transition-transform duration-500"
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 58vw"
+                className="object-cover hover:scale-105 transition-transform duration-500"
               />
             </Link>
             <div className="lg:col-span-5 p-8 sm:p-10 flex flex-col justify-center">
@@ -122,10 +126,12 @@ export function HomeFeedClient({ initialBlogs, initialCategories }) {
               </h2>
               <p className="text-sm text-muted-foreground leading-relaxed mb-6">{featuredBlog.excerpt}</p>
               <div className="flex items-center gap-3">
-                <img
+                <Image
                   src={featuredBlog.author?.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'}
-                  alt={featuredBlog.author?.name}
-                  className="w-9 h-9 rounded-full object-cover border border-border"
+                  alt={featuredBlog.author?.name || 'Author'}
+                  width={36}
+                  height={36}
+                  className="rounded-full object-cover border border-border"
                 />
                 <div>
                   <p className="text-xs font-bold">{featuredBlog.author?.name}</p>

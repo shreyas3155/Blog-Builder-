@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/hooks/useAuth';
 import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { LayoutDashboard, FileEdit, ArrowLeft, LogOut, Loader2 } from 'lucide-react';
@@ -43,10 +44,12 @@ export default function EmployeeLayout({ children }) {
 
         {/* User Block */}
         <div className="flex items-center gap-3 p-3 border border-border/40 rounded-xl bg-secondary/15 mb-6">
-          <img
+          <Image
             src={user.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'}
-            alt={user.name}
-            className="w-9 h-9 rounded-full object-cover border border-border"
+            alt={user.name || 'User'}
+            width={36}
+            height={36}
+            className="rounded-full object-cover border border-border"
           />
           <div className="min-w-0">
             <h4 className="text-xs font-bold truncate">{user.name}</h4>
